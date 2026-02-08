@@ -41,12 +41,11 @@ function generateSong({ seed, index, lang, localeData }) {
     };
 }
 
-function calculateLikes(seed, index, avg) {
+function calculateLikes(seed, index, avgLikes) {
     const likesFaker = new Faker({ locale: en });
     likesFaker.seed(`${seed}-${index}-likes`);
-    const baseValue = Math.floor(avg);
-    const chance = avg - (baseValue);
+    const baseValue = Math.floor(avgLikes);
+    const probability = avgLikes - baseValue;
     const random = likesFaker.number.float({ min: 0, max: 1 });
-    const extra = (random < chance) ? 1 : 0;
-    return baseValue + extra;
+    return (random < probability) ? (baseValue + 1) : (baseValue + 0);
 }

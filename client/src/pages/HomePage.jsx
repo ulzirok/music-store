@@ -3,6 +3,7 @@ import TableView from "../components/TableView";
 import PaginationBar from "../components/Pagination.jsx";
 import GalleryView from "../components/GalleryView";
 import { useState, useEffect } from "react";
+import { buildQuery } from "../utils/buildQuery";
 import { getSongs } from "../api/songs.api.js";
 import { VIEW_MODES } from "../constants/viewModes";
 import { QUERY_PARAMS } from "../constants/queryParams.js";
@@ -18,15 +19,6 @@ export default function HomePage() {
   const [expandedSongId, setExpandedSongId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const ui = localization[params.lang]?.ui || localization["en-US"].ui;
-
-  const buildQuery = (params) =>
-    new URLSearchParams({
-      seed: params.seed,
-      lang: params.lang,
-      page: params.page,
-      pageSize: params.pageSize,
-      likes: params.likesAverage,
-    }).toString();
 
   const fetchSongs = async (params) => {
     try {
@@ -47,7 +39,7 @@ export default function HomePage() {
     setParams((prev) => ({
       ...prev,
       ...newParams,
-      page: 1,
+      page: newParams.page ?? 1,
     }));
   };
 
@@ -55,6 +47,7 @@ export default function HomePage() {
     const load = async () => {
       const data = await fetchSongs(params);
       if (!data) return;
+
       if (viewMode === VIEW_MODES.GALLERY && params.page > 1) {
         setSongs((prev) => [...prev, ...data]);
       } else {
@@ -64,11 +57,15 @@ export default function HomePage() {
     load();
   }, [params, viewMode]);
 
-  useEffect(() => {
+  const handleViewChange = (mode) => {
+    setViewMode(mode);
     setSongs([]);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    setParams((prev) => ({ ...prev, page: 1 }));
-  }, [viewMode]);
+    setExpandedSongId(null);
+    setParams((prev) => ({
+      ...prev,
+      page: 1,
+    }));
+  };
 
   const toggleExpand = (id) => {
     setExpandedSongId((prevId) => (prevId === id ? null : id));
@@ -87,7 +84,7 @@ export default function HomePage() {
       <Header
         ui={ui}
         viewMode={viewMode}
-        onViewChange={setViewMode}
+        onViewChange={handleViewChange}
         lang={params.lang}
         seed={params.seed}
         likesAverage={params.likesAverage}

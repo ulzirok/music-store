@@ -87,7 +87,7 @@ export default function Header({
                 />
                 <Button
                   title="Random seed"
-                  variant="primary"
+                  variant="light"
                   onClick={handleRandomClick}
                 >
                   <Shuffle size={18} />
