@@ -8,7 +8,7 @@ import { getSongs } from "../api/songs.api.js";
 import { VIEW_MODES } from "../constants/viewModes";
 import { QUERY_PARAMS } from "../constants/queryParams.js";
 import Loader from "../components/Loader.jsx";
-import { localization } from "../constants/localization";
+import { UI_TEXT } from "../localization/ui";
 import { Toaster } from "react-hot-toast";
 import toast from "react-hot-toast";
 
@@ -18,7 +18,7 @@ export default function HomePage() {
   const [params, setParams] = useState(QUERY_PARAMS);
   const [expandedSongId, setExpandedSongId] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const ui = localization[params.lang]?.ui || localization["en-US"].ui;
+  const ui = UI_TEXT[params.lang] || UI_TEXT["en-US"];
 
   const fetchSongs = async (params) => {
     try {
@@ -26,7 +26,7 @@ export default function HomePage() {
       const query = buildQuery(params);
       return await getSongs(query);
     } catch (err) {
-      const errorMessage = err.response?.data?.error || "Server connection failed";
+      const errorMessage = err.message || "Server connection failed";
       toast.error(errorMessage);
     } finally {
       setIsLoading(false);

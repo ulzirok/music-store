@@ -1,5 +1,5 @@
 const { Faker, en, ru, de, uk, uz_UZ, base } = require('@faker-js/faker');
-const localization = require('../localization/localization');
+const locales = require('../data/locales.json');
 
 const fakerLocales = {
     'en-US': [en, base],
@@ -10,34 +10,40 @@ const fakerLocales = {
 };
 
 exports.generateSongs = ({ seed, lang, page, pageSize, likes }) => {
-    const localeData = localization[lang] || localization['en-US'];
     const songs = [];
 
     for (let i = 0; i < pageSize; i++) {
         const itemIndex = (page - 1) * pageSize + i;
-        const song = generateSong({ seed, index: itemIndex, lang, localeData });
+        const song = generateSong({ seed, index: itemIndex, lang });
         song.likes = calculateLikes(seed, itemIndex, likes);
         songs.push(song);
     }
     return songs;
 };
 
-function generateSong({ seed, index, lang, localeData }) {
-    const contentFaker = new Faker({
-        locale: fakerLocales[lang] || [en, base]
-    });
-    contentFaker.seed(`${seed}-${index}`);
-    const title = contentFaker.helpers.arrayElements(localeData.words, 2).join(' ');
+function generateSong({ seed, index, lang }) {
+    const localeData = locales[lang] || locales['en-US'];
+    const faker = new Faker({ locale: fakerLocales[lang] || [en, base] });
+
+    const combo = (suffix) => {
+        faker.seed(`${seed}-${index}-${suffix}`);
+        return `${faker.helpers.arrayElement(localeData.words)} ${faker.helpers.arrayElement(localeData.words)}`;
+    };
+
+    const title = combo('title');
+    const albumName = combo('album');
+    const isSingle = faker.datatype.boolean(0.3);
+    faker.seed(`${seed}-${index}-meta`);
 
     return {
-        id: contentFaker.string.uuid(),
+        id: faker.string.uuid(),
         index: index + 1,
-        title: title,
-        artist: contentFaker.helpers.arrayElement(localeData.artists),
-        genre: contentFaker.helpers.arrayElement(localeData.genres),
-        album: contentFaker.datatype.boolean(0.7) ? contentFaker.music.album() : localeData.singleLabel,
-        cover: contentFaker.image.url({ category: 'abstract', width: 200, height: 200 }),
-        review: contentFaker.lorem.sentence()
+        title: title.charAt(0).toUpperCase() + title.slice(1).toLowerCase(),
+        artist: faker.person.fullName(),
+        genre: faker.music.genre(),
+        album: isSingle ? localeData.single : albumName,
+        cover: faker.image.url({ width: 200, height: 200, category: 'abstract' }),
+        review: faker.lorem.sentence()
     };
 }
 
