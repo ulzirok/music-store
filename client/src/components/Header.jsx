@@ -110,6 +110,9 @@ export default function Header({
                   max={10}
                   step={0.1}
                 />
+                <span className="ms-2 fw-semibold">
+                  {localLikes.toFixed(1)}
+                </span>
               </Form.Group>
             </Col>
             <Col xs="auto">
