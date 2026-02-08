@@ -36,7 +36,7 @@ function generateSong({ seed, index, lang, localeData }) {
         artist: contentFaker.helpers.arrayElement(localeData.artists),
         genre: contentFaker.helpers.arrayElement(localeData.genres),
         album: contentFaker.datatype.boolean(0.7) ? contentFaker.music.album() : localeData.singleLabel,
-        cover: contentFaker.image.urlLoremFlickr({ category: 'abstract', width: 200, height: 200 }),
+        cover: contentFaker.image.url({ category: 'abstract', width: 200, height: 200 }),
         review: contentFaker.lorem.sentence()
     };
 }
