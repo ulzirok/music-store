@@ -57,7 +57,7 @@ export default function Header({
           <Row className="align-items-center g-3">
             <Col xs="auto">
               <Form.Group className="d-flex align-items-center">
-                <Form.Label className="me-2 mb-0">{ui.region}:</Form.Label>
+                <Form.Label className="me-2 mb-0">{ui.tableRegion}:</Form.Label>
                 <Form.Select
                   value={lang}
                   onChange={(e) => onLangChange(e.target.value)}
@@ -72,7 +72,7 @@ export default function Header({
             </Col>
             <Col xs="auto">
               <Form.Group className="d-flex align-items-center gap-1">
-                <Form.Label className="me-2 mb-0">{ui.seed}:</Form.Label>
+                <Form.Label className="me-2 mb-0">{ui.tableSeed}:</Form.Label>
                 <Form.Control
                   type="text"
                   value={localSeed}
@@ -97,7 +97,7 @@ export default function Header({
             <Col>
               <Form.Group className="d-flex align-items-center w-50">
                 <Form.Label className="me-2 mb-0 text-nowrap">
-                  {ui.likes}:
+                  {ui.tableLikes}:
                 </Form.Label>
                 <Form.Range
                   value={localLikes}
